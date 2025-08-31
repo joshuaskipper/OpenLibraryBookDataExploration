@@ -12,7 +12,7 @@ namespace OpenLibraryBookDataExploration
             Console.WriteLine(DateTime.Today.ToString("D"));
 
 
-            string url = "https://pokeapi.co/api/v2/pokemon?limit=200&utm_source=chatgpt.com";
+            string url = "https://openlibrary.org/subjects/science_fiction.json?limit=200";
 
             HttpClient client = new HttpClient();
 
@@ -24,6 +24,12 @@ namespace OpenLibraryBookDataExploration
                 {
                     var json = await response.Content.ReadAsStringAsync();
 
+                    var openlibrary = JsonSerializer.Deserialize<Root>(json);
+
+                    foreach (var item in openlibrary.works)
+                    {
+                        Console.WriteLine(item.title);
+                    }
                 }
             }
             catch (Exception ex)
