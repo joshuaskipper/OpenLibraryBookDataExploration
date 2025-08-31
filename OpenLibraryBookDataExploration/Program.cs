@@ -26,10 +26,28 @@ namespace OpenLibraryBookDataExploration
 
                     var openlibrary = JsonSerializer.Deserialize<Root>(json);
 
-                    foreach (var item in openlibrary.works)
+                    // Group by author - but we need to handle multiple authors per book
+                    var booksByAuthor = from book in openlibrary.works
+                                        //where book.first_publish_year < 1950
+                                        from author in book.authors 
+                                        group book by author.name into authorGroup
+                                        orderby authorGroup.Key 
+                                        select authorGroup;
+
+                    Console.WriteLine("Science Fiction Books from openlibrary.org api, Grouped by Author:\n");
+
+                    foreach (var authorGroup in booksByAuthor)
                     {
-                        Console.WriteLine(item.title);
+                        Console.WriteLine($"\nAuthor: {authorGroup.Key}");
+
+                        foreach (var book in authorGroup)
+                        {
+                            Console.WriteLine($"  - {book.title} ({book.first_publish_year})");
+                        }
+                        
                     }
+
+
                 }
             }
             catch (Exception ex)
